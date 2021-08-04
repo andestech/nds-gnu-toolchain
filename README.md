@@ -1,0 +1,34 @@
+# nds-gnu-toolchain
+GNU toolchain for AndesCore
+
+###  Getting the sources
+
+    $ git clone https://github.com/andestech/nds-gnu-toolchain.git -b <branch_name>
+    $ git submodule update --init --recursive
+
+### Installation (Newlib)
+First, you must define the variables in script "build_elf_toolchain.sh" as shown in the table.
+Then, you can execute the script to build and install toolcahin.
+The default setting is "nds32le-elf-newlib-v5".
+
+Toolchain              | ARCH            | ABI    | CPU   | TARGET
+-----------------------|:---------------:|-------:| -----:|----------------
+nds32le-elf-newlib-v5  | rv32imcxv5      | ilp32  | n25   | riscv32-elf
+nds32le-elf-newlib-v5f | rv32imfcxv5     | ilp32f | n25   | riscv32-elf
+nds32le-elf-newlib-v5d | rv32imfdcxv5    | ilp32d | n25   | riscv32-elf
+nds64le-elf-newlib-v5  | rv64imcxv5      | lp64   | nx25  | riscv64-elf
+nds64le-elf-newlib-v5f | rv64imfcxv5     | lp64f  | nx25  | riscv64-elf
+nds64le-elf-newlib-v5d | rv64imfdcxv5    | lp64d  | nx25  | riscv64-elf
+
+
+### Installation (Linux)
+First, you must define the variables in script "build_linux_toolchain.sh" as shown in the table.
+Then, you can execute the script to build and install toolcahin.
+The default setting is "nds32le-linux-glibc-v5d".
+
+Toolchain               | ARCH             | ABI    | CPU   | TARGET
+------------------------|:----------------:|-------:| -----:|----------------
+nds32le-linux-glibc-v5  | rv32imacxv5      | ilp32  | n25   | riscv32-elf
+nds32le-linux-glibc-v5d | rv32imafdcxv5    | ilp32d | n25   | riscv32-elf
+nds64le-linux-glibc-v5  | rv64imacxv5      | lp64   | nx25  | riscv64-elf
+nds64le-linux-glibc-v5d | rv64imacfdxv5    | lp64d  | nx25  | riscv64-elf
