@@ -25,6 +25,7 @@ The default setting is "nds32le-elf-newlib-v5".
 
 Toolchain              | ARCH            | ABI    | CPU   | TARGET
 -----------------------|:---------------:|-------:| -----:|----------------
+nds32le-elf-newlib-v5e | rv32emcxv5      | ilp32e | n25   | riscv32-elf
 nds32le-elf-newlib-v5  | rv32imcxv5      | ilp32  | n25   | riscv32-elf
 nds32le-elf-newlib-v5f | rv32imfcxv5     | ilp32f | n25   | riscv32-elf
 nds32le-elf-newlib-v5d | rv32imfdcxv5    | ilp32d | n25   | riscv32-elf
