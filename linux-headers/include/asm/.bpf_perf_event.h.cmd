@@ -1,0 +1,1 @@
+cmd_usr/include/asm/bpf_perf_event.h := sh /fast-playground/scwang/bs3-ast500/source-packages/linux-5.4-riscv-RISCV-Linux-5.4-ast-v5_0_0-branch/scripts/headers_install.sh arch/riscv/include/generated/uapi/asm/bpf_perf_event.h usr/include/asm/bpf_perf_event.h
