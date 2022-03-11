@@ -1,0 +1,1 @@
+cmd_usr/include/asm/byteorder.h := sh /fast-playground/scwang/bs3-ast510/source-packages/linux-5.4-riscv-RISCV-Linux-5.4/scripts/headers_install.sh /fast-playground/scwang/bs3-ast510/source-packages/linux-5.4-riscv-RISCV-Linux-5.4/arch/riscv/include/uapi/asm/byteorder.h usr/include/asm/byteorder.h
