@@ -1,6 +1,6 @@
 TARGET=riscv32-linux
 PREFIX=`pwd`/nds32le-linux-glibc-v5d
-ARCH=rv32imafdcxv5
+ARCH=rv32imafdcxandes
 ABI=ilp32d
 CPU=n25
 BUILD=`pwd`/build-nds32le-linux-glibc-v5d

@@ -1,6 +1,6 @@
 TARGET=riscv32-elf
 PREFIX=`pwd`/nds32le-elf-newlib-v5
-ARCH=rv32imcxv5
+ARCH=rv32imcxandes
 ABI=ilp32
 CPU=n25
 BUILD=`pwd`/build-nds32le-elf-newlib-v5
@@ -53,8 +53,8 @@ ${GCC_SRC}/configure \
   --with-newlib --with-abi=${ABI} --disable-werror \
   --disable-shared --enable-threads=single \
   --enable-checking=release \
-  CFLAGS_FOR_TARGET="-O2 -g -mno-error-on-no-atomic -mstrict-align -mfp16" \
-  CXXFLAGS_FOR_TARGET="-O2 -g -mno-error-on-no-atomic -mstrict-align -mfp16"
+  CFLAGS_FOR_TARGET="-O2 -g -mstrict-align" \
+  CXXFLAGS_FOR_TARGET="-O2 -g -mstrict-align"
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 make ${MAKE_PARALLEL} all-gcc
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
@@ -83,8 +83,8 @@ ${GCC_SRC}/configure \
   --with-newlib --disable-shared --enable-threads=single \
   --disable-werror --with-headers=${PREFIX}/${TARGET}/include \
   --enable-checking=release \
-  CFLAGS_FOR_TARGET="-O2 -g  -mno-error-on-no-atomic -mstrict-align" \
-  CXXFLAGS_FOR_TARGET="-O2 -g  -mno-error-on-no-atomic -mstrict-align"
+  CFLAGS_FOR_TARGET="-O2 -g -mstrict-align" \
+  CXXFLAGS_FOR_TARGET="-O2 -g -mstrict-align"
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 make ${MAKE_PARALLEL} all
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
