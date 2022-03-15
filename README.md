@@ -23,15 +23,15 @@ First, you must define the variables in script "build_elf_toolchain.sh" as shown
 Then, you can execute the script to build and install toolcahin.
 The default setting is "nds32le-elf-newlib-v5".
 
-Toolchain              | ARCH            | ABI    | CPU   | TARGET
------------------------|:---------------:|-------:| -----:|----------------
-nds32le-elf-newlib-v5e | rv32emcxv5      | ilp32e | n25   | riscv32-elf
-nds32le-elf-newlib-v5  | rv32imcxv5      | ilp32  | n25   | riscv32-elf
-nds32le-elf-newlib-v5f | rv32imfcxv5     | ilp32f | n25   | riscv32-elf
-nds32le-elf-newlib-v5d | rv32imfdcxv5    | ilp32d | n25   | riscv32-elf
-nds64le-elf-newlib-v5  | rv64imcxv5      | lp64   | nx25  | riscv64-elf
-nds64le-elf-newlib-v5f | rv64imfcxv5     | lp64f  | nx25  | riscv64-elf
-nds64le-elf-newlib-v5d | rv64imfdcxv5    | lp64d  | nx25  | riscv64-elf
+Toolchain              | ARCH               | ABI    | CPU                | TARGET
+-----------------------|:------------------:|-------:| ------------------:|----------------
+nds32le-elf-newlib-v5e | rv32emcxandes      | ilp32e | andes-25-series    | riscv32-elf
+nds32le-elf-newlib-v5  | rv32imcxandes      | ilp32  | andes-25-series    | riscv32-elf
+nds32le-elf-newlib-v5f | rv32imfcxandes     | ilp32f | andes-25-series    | riscv32-elf
+nds32le-elf-newlib-v5d | rv32imfdcxandes    | ilp32d | andes-25-series    | riscv32-elf
+nds64le-elf-newlib-v5  | rv64imcxandes      | lp64   | andes-25-series    | riscv64-elf
+nds64le-elf-newlib-v5f | rv64imfcxandes     | lp64f  | andes-25-series    | riscv64-elf
+nds64le-elf-newlib-v5d | rv64imfdcxandes    | lp64d  | andes-25-series    | riscv64-elf
 
 
 ### Installation (Linux)
@@ -39,9 +39,9 @@ First, you must define the variables in script "build_linux_toolchain.sh" as sho
 Then, you can execute the script to build and install toolcahin.
 The default setting is "nds32le-linux-glibc-v5d".
 
-Toolchain               | ARCH             | ABI    | CPU   | TARGET
-------------------------|:----------------:|-------:| -----:|----------------
-nds32le-linux-glibc-v5  | rv32imacxv5      | ilp32  | n25   | riscv32-elf
-nds32le-linux-glibc-v5d | rv32imafdcxv5    | ilp32d | n25   | riscv32-elf
-nds64le-linux-glibc-v5  | rv64imacxv5      | lp64   | nx25  | riscv64-elf
-nds64le-linux-glibc-v5d | rv64imacfdxv5    | lp64d  | nx25  | riscv64-elf
+Toolchain               | ARCH                | ABI    | CPU              | TARGET
+------------------------|:-------------------:|-------:| ----------------:|----------------
+nds32le-linux-glibc-v5  | rv32imacxandes      | ilp32  | andes-25-series  | riscv32-elf
+nds32le-linux-glibc-v5d | rv32imafdcxandes    | ilp32d | andes-25-series  | riscv32-elf
+nds64le-linux-glibc-v5  | rv64imacxandes      | lp64   | andes-25-series  | riscv64-elf
+nds64le-linux-glibc-v5d | rv64imacfdxandes    | lp64d  | andes-25-series  | riscv64-elf
