@@ -4,7 +4,7 @@ ARCH=rv32imafdcxandes
 ABI=ilp32d
 CPU=andes-25-series
 BUILD=`pwd`/build-nds32le-linux-glibc-v5d
-SYSROOT=${PREFIX}/${TARGET}/sysroot
+SYSROOT=${PREFIX}/sysroot
 TARGET_CC=${PREFIX}/bin/${TARGET}-gcc
 TARGET_CXX=${PREFIX}/bin/${TARGET}-g++
 
@@ -57,7 +57,7 @@ ${GCC_SRC}/configure \
   --target=${TARGET} --prefix=${PREFIX} --with-tune=${CPU} --target=${TARGET} \
   --disable-nls --enable-languages=c,c++ --enable-lto \
   --enable-gp-insn-relax-default=yes \
-  --with-abi=${ABI} --disable-werror \
+  --with-arch=${ARCH} --with-abi=${ABI} --disable-werror \
   --disable-multilib --enable-shared --enable-tls \
   --disable-libsanitizer --enable-checking=release \
   CFLAGS_FOR_TARGET="-O2 -g -mstrict-align" \
@@ -85,7 +85,8 @@ cd glibc
 ${GLIBC_SRC}/configure --prefix=/usr --host=${TARGET} \
   --prefix=/usr --disable-werror --enable-shared --enable-obsolete-rpc \
   --enable-kernel=3.0.0 --with-headers=${SYSROOT}/usr/include \
-  CC=${TARGET_CC} CXX=${TARGET_CXX}
+  --with-arch=${ARCH} --with-abi=${ABI} \
+  CC=${TARGET_CC} CXX=${TARGET_CXX} CFLAGS="-O2 -g"
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 
 make ${MAKE_PARALLEL}
@@ -103,7 +104,7 @@ ${GCC_SRC}/configure \
   --target=${TARGET} --prefix=${PREFIX} --with-tune=${CPU} --target=${TARGET} \
   --disable-nls --enable-languages=c,c++ --enable-lto \
   --enable-gp-insn-relax-default=yes \
-  --with-abi=${ABI} --disable-werror \
+  --with-arch=${ARCH} --with-abi=${ABI} --disable-werror \
   --disable-multilib --enable-shared --enable-tls \
    --with-sysroot=${SYSROOT} \
   --enable-checking=release \
