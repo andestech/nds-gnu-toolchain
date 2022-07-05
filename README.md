@@ -43,4 +43,4 @@ Toolchain               | ARCH             | ABI    | CPU   | TARGET
 nds32le-linux-glibc-v5  | rv32imacxandes   | ilp32  | n25   | riscv32-elf
 nds32le-linux-glibc-v5d | rv32imafdcxandes | ilp32d | n25   | riscv32-elf
 nds64le-linux-glibc-v5  | rv64imacxandes   | lp64   | nx25  | riscv64-elf
-nds64le-linux-glibc-v5d | rv64imacfdxandes | lp64d  | nx25  | riscv64-elf
+nds64le-linux-glibc-v5d | rv64imafdcxandes | lp64d  | nx25  | riscv64-elf
