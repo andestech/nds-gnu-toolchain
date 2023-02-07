@@ -1,0 +1,20 @@
+[submodule "gcc"]
+	path = gcc
+	url = git@github.com:andestech/gcc.git
+	branch = ast-v5_2_0-release-v5
+[submodule "binutils"]
+	path = binutils
+	url = git@github.com:andestech/binutils.git
+	branch = ast-v5_2_0-release-v5
+[submodule "gdb"]
+	path = gdb
+	url = git@github.com:andestech/gdb.git
+	branch = ast-v5_2_0-release-v5
+[submodule "newlib"]
+	path = newlib
+	url = git@github.com:andestech/newlib.git
+	branch = ast-v5_2_0-release-v5
+[submodule "glibc"]
+	path = glibc
+	url = git@github.com:andestech/glibc.git
+	branch = ast-v5_2_0-release-v5
