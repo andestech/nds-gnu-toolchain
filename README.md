@@ -41,7 +41,7 @@ The default setting is "nds32le-linux-glibc-v5d".
 
 Toolchain               | ARCH                | ABI    | CPU              | TARGET
 ------------------------|:-------------------:|-------:| ----------------:|----------------
-nds32le-linux-glibc-v5  | rv32imacxandes      | ilp32  | andes-25-series  | riscv32-elf
-nds32le-linux-glibc-v5d | rv32imafdcxandes    | ilp32d | andes-25-series  | riscv32-elf
-nds64le-linux-glibc-v5  | rv64imacxandes      | lp64   | andes-25-series  | riscv64-elf
-nds64le-linux-glibc-v5d | rv64imafdcxandes    | lp64d  | andes-25-series  | riscv64-elf
+nds32le-linux-glibc-v5  | rv32imacxandes      | ilp32  | andes-25-series  | riscv32-linux
+nds32le-linux-glibc-v5d | rv32imafdcxandes    | ilp32d | andes-25-series  | riscv32-linux
+nds64le-linux-glibc-v5  | rv64imacxandes      | lp64   | andes-25-series  | riscv64-linux
+nds64le-linux-glibc-v5d | rv64imafdcxandes    | lp64d  | andes-25-series  | riscv64-linux
