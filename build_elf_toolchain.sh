@@ -100,8 +100,7 @@ ${GDB_SRC}/configure \
   --with-curses --disable-nls --enable-tui --with-python=no \
   --with-lzma=no --with-expat=yes --with-guile=no \
   --disable-werror --enable-sim \
-  --disable-binutils --disable-ld --disable-gas --disable-gprof \
-  CFLAGS="-std=gnu99"
+  --disable-binutils --disable-ld --disable-gas --disable-gprof
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 
 make ${MAKE_PARALLEL} all
