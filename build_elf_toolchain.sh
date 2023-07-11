@@ -101,7 +101,8 @@ ${GDB_SRC}/configure \
   --with-lzma=no --with-expat=yes --with-guile=no \
   --disable-werror --enable-sim \
   --disable-binutils --disable-ld --disable-gas --disable-gprof \
-  CFLAGS="-std=gnu99"
+  CFLAGS="-std=gnu99" \
+  CXXFLAGS="-std=c++14"
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 
 make ${MAKE_PARALLEL} all
