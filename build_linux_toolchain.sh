@@ -3,6 +3,7 @@ PREFIX=`pwd`/nds32le-linux-glibc-v5d
 ARCH=rv32imafdcxandes
 ABI=ilp32d
 CPU=andes-25-series
+XLEN=32
 BUILD=`pwd`/build-nds32le-linux-glibc-v5d
 SYSROOT=${PREFIX}/sysroot
 TARGET_CC=${PREFIX}/bin/${TARGET}-gcc
@@ -129,7 +130,8 @@ ${GDB_SRC}/configure \
   --with-lzma=no --with-expat=yes --with-guile=no \
   --disable-werror --disable-sim \
   --disable-binutils --disable-ld --disable-gas --disable-gprof \
-  CFLAGS="-std=gnu99"
+  CFLAGS="-std=gnu99" \
+  CXXFLAGS="-std=c++14"
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 
 make ${MAKE_PARALLEL} all
@@ -139,3 +141,5 @@ make install
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 
 cd ..
+
+cp -r ${PREFIX}/${TARGET}/lib/* ${SYSROOT}/lib${XLEN}/${ABI}/
