@@ -1,6 +1,6 @@
 TARGET=riscv32-linux
 PREFIX=`pwd`/nds32le-linux-glibc-v5d
-ARCH=rv32imafdcxandes
+ARCH=rv32imafd_zicsr_zifencei_zca_xandes
 ABI=ilp32d
 CPU=andes-25-series
 XLEN=32
@@ -10,7 +10,6 @@ TARGET_CC=${PREFIX}/bin/${TARGET}-gcc
 TARGET_CXX=${PREFIX}/bin/${TARGET}-g++
 
 BINUTILS_SRC=`pwd`/binutils
-GDB_SRC=`pwd`/gdb
 GCC_SRC=`pwd`/gcc
 GLIBC_SRC=`pwd`/glibc
 KERNEL_HDR_SRC=`pwd`/linux-headers
@@ -124,13 +123,12 @@ cd ..
 # 6. GDB
 mkdir -p gdb
 cd gdb
-${GDB_SRC}/configure \
+${BINUTILS_SRC}/configure \
   --target=${TARGET} --prefix=${PREFIX} --with-arch=${ARCH} \
   --with-curses --disable-nls --enable-tui --with-python=no \
   --with-lzma=no --with-expat=yes --with-guile=no \
   --disable-werror --disable-sim \
-  --disable-binutils --disable-ld --disable-gas --disable-gprof \
-  CFLAGS="-std=gnu99"
+  --disable-binutils --disable-ld --disable-gas --disable-gprof
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 
 make ${MAKE_PARALLEL} all

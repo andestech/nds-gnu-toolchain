@@ -10,6 +10,11 @@
 
 #include <linux/types.h>
 
+#define PTRACE_GETFDPIC		33
+
+#define PTRACE_GETFDPIC_EXEC	0
+#define PTRACE_GETFDPIC_INTERP	1
+
 /*
  * User-mode register state for core dumps, ptrace, sigcontext
  *
@@ -51,11 +56,13 @@ struct user_regs_struct {
 	unsigned long t6;
 };
 
-#ifdef CONFIG_DSP
-struct __riscv_dsp_state {
+struct __riscv_andesdsp_ext_state {
 	unsigned long ucode;
 };
-#endif
+
+struct __riscv_amm_ext_state {
+	unsigned long uzobctl;
+};
 
 struct __riscv_f_ext_state {
 	__u32 f[32];

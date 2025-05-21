@@ -597,6 +597,10 @@ enum gaudi2_engine_id {
 	GAUDI2_ENGINE_ID_NIC10_1,
 	GAUDI2_ENGINE_ID_NIC11_0,
 	GAUDI2_ENGINE_ID_NIC11_1,
+	GAUDI2_ENGINE_ID_PCIE,
+	GAUDI2_ENGINE_ID_PSOC,
+	GAUDI2_ENGINE_ID_ARC_FARM,
+	GAUDI2_ENGINE_ID_KDMA,
 	GAUDI2_ENGINE_ID_SIZE
 };
 
@@ -704,7 +708,8 @@ enum hl_server_type {
 	HL_SERVER_GAUDI_HLS1H = 2,
 	HL_SERVER_GAUDI_TYPE1 = 3,
 	HL_SERVER_GAUDI_TYPE2 = 4,
-	HL_SERVER_GAUDI2_HLS2 = 5
+	HL_SERVER_GAUDI2_HLS2 = 5,
+	HL_SERVER_GAUDI2_TYPE1 = 7
 };
 
 /*
@@ -717,6 +722,12 @@ enum hl_server_type {
  * HL_NOTIFIER_EVENT_DEVICE_UNAVAILABLE	- Indicates device is unavailable
  * HL_NOTIFIER_EVENT_USER_ENGINE_ERR	- Indicates device engine in error state
  * HL_NOTIFIER_EVENT_GENERAL_HW_ERR     - Indicates device HW error
+ * HL_NOTIFIER_EVENT_RAZWI              - Indicates razwi happened
+ * HL_NOTIFIER_EVENT_PAGE_FAULT         - Indicates page fault happened
+ * HL_NOTIFIER_EVENT_CRITICAL_HW_ERR    - Indicates a HW error that requires SW abort and
+ *                                        HW reset
+ * HL_NOTIFIER_EVENT_CRITICAL_FW_ERR    - Indicates a FW error that requires SW abort and
+ *                                        HW reset
  */
 #define HL_NOTIFIER_EVENT_TPC_ASSERT		(1ULL << 0)
 #define HL_NOTIFIER_EVENT_UNDEFINED_OPCODE	(1ULL << 1)
@@ -725,6 +736,10 @@ enum hl_server_type {
 #define HL_NOTIFIER_EVENT_DEVICE_UNAVAILABLE	(1ULL << 4)
 #define HL_NOTIFIER_EVENT_USER_ENGINE_ERR	(1ULL << 5)
 #define HL_NOTIFIER_EVENT_GENERAL_HW_ERR	(1ULL << 6)
+#define HL_NOTIFIER_EVENT_RAZWI			(1ULL << 7)
+#define HL_NOTIFIER_EVENT_PAGE_FAULT		(1ULL << 8)
+#define HL_NOTIFIER_EVENT_CRITICL_HW_ERR	(1ULL << 9)
+#define HL_NOTIFIER_EVENT_CRITICL_FW_ERR	(1ULL << 10)
 
 /* Opcode for management ioctl
  *
@@ -772,12 +787,28 @@ enum hl_server_type {
  *                            The address which accessing it caused the razwi.
  *                            Razwi initiator.
  *                            Razwi cause, was it a page fault or MMU access error.
+ *                            May return 0 even though no new data is available, in that case
+ *                            timestamp will be 0.
  * HL_INFO_DEV_MEM_ALLOC_PAGE_SIZES - Retrieve valid page sizes for device memory allocation
  * HL_INFO_SECURED_ATTESTATION - Retrieve attestation report of the boot.
  * HL_INFO_REGISTER_EVENTFD   - Register eventfd for event notifications.
  * HL_INFO_UNREGISTER_EVENTFD - Unregister eventfd
  * HL_INFO_GET_EVENTS         - Retrieve the last occurred events
  * HL_INFO_UNDEFINED_OPCODE_EVENT - Retrieve last undefined opcode error information.
+ *                                  May return 0 even though no new data is available, in that case
+ *                                  timestamp will be 0.
+ * HL_INFO_ENGINE_STATUS - Retrieve the status of all the h/w engines in the asic.
+ * HL_INFO_PAGE_FAULT_EVENT - Retrieve parameters of captured page fault.
+ *                            May return 0 even though no new data is available, in that case
+ *                            timestamp will be 0.
+ * HL_INFO_USER_MAPPINGS - Retrieve user mappings, captured after page fault event.
+ * HL_INFO_FW_GENERIC_REQ - Send generic request to FW.
+ * HL_INFO_HW_ERR_EVENT   - Retrieve information on the reported HW error.
+ *                          May return 0 even though no new data is available, in that case
+ *                          timestamp will be 0.
+ * HL_INFO_FW_ERR_EVENT   - Retrieve information on the reported FW error.
+ *                          May return 0 even though no new data is available, in that case
+ *                          timestamp will be 0.
  */
 #define HL_INFO_HW_IP_INFO			0
 #define HL_INFO_HW_EVENTS			1
@@ -809,6 +840,11 @@ enum hl_server_type {
 #define HL_INFO_GET_EVENTS			30
 #define HL_INFO_UNDEFINED_OPCODE_EVENT		31
 #define HL_INFO_ENGINE_STATUS			32
+#define HL_INFO_PAGE_FAULT_EVENT		33
+#define HL_INFO_USER_MAPPINGS			34
+#define HL_INFO_FW_GENERIC_REQ			35
+#define HL_INFO_HW_ERR_EVENT			36
+#define HL_INFO_FW_ERR_EVENT			37
 
 #define HL_INFO_VERSION_MAX_LEN			128
 #define HL_INFO_CARD_NAME_MAX_LEN		16
@@ -859,6 +895,13 @@ enum hl_server_type {
  * @number_of_user_interrupts: The number of interrupts that are available to the userspace
  *                             application to use. Relevant for Gaudi2 and later.
  * @device_mem_alloc_default_page_size: default page size used in device memory allocation.
+ * @revision_id: PCI revision ID of the ASIC.
+ * @tpc_interrupt_id: interrupt id for TPC to use in order to raise events towards the host.
+ * @rotator_enabled_mask: Bit-mask that represents which rotators are enabled.
+ *                        Relevant for Gaudi3 and later.
+ * @engine_core_interrupt_reg_addr: interrupt register address for engine core to use
+ *                                  in order to raise events toward FW.
+ * @reserved_dram_size: DRAM size reserved for driver and firmware.
  */
 struct hl_info_hw_ip_info {
 	__u64 sram_base_address;
@@ -886,9 +929,20 @@ struct hl_info_hw_ip_info {
 	__u64 dram_page_size;
 	__u32 edma_enabled_mask;
 	__u16 number_of_user_interrupts;
-	__u16 pad2;
-	__u64 reserved4;
+	__u8 reserved1;
+	__u8 reserved2;
+	__u64 reserved3;
 	__u64 device_mem_alloc_default_page_size;
+	__u64 reserved4;
+	__u64 reserved5;
+	__u32 reserved6;
+	__u8 reserved7;
+	__u8 revision_id;
+	__u16 tpc_interrupt_id;
+	__u32 rotator_enabled_mask;
+	__u32 reserved9;
+	__u64 engine_core_interrupt_reg_addr;
+	__u64 reserved_dram_size;
 };
 
 struct hl_info_dram_usage {
@@ -896,7 +950,7 @@ struct hl_info_dram_usage {
 	__u64 ctx_dram_mem;
 };
 
-#define HL_BUSY_ENGINES_MASK_EXT_SIZE	2
+#define HL_BUSY_ENGINES_MASK_EXT_SIZE	4
 
 struct hl_info_hw_idle {
 	__u32 is_idle;
@@ -1071,31 +1125,44 @@ struct hl_info_cs_timeout_event {
 	__u64 seq;
 };
 
-#define HL_RAZWI_PAGE_FAULT 0
-#define HL_RAZWI_MMU_ACCESS_ERROR 1
+#define HL_RAZWI_NA_ENG_ID U16_MAX
+#define HL_RAZWI_MAX_NUM_OF_ENGINES_PER_RTR 128
+#define HL_RAZWI_READ		BIT(0)
+#define HL_RAZWI_WRITE		BIT(1)
+#define HL_RAZWI_LBW		BIT(2)
+#define HL_RAZWI_HBW		BIT(3)
+#define HL_RAZWI_RR		BIT(4)
+#define HL_RAZWI_ADDR_DEC	BIT(5)
 
 /**
  * struct hl_info_razwi_event - razwi information.
  * @timestamp: timestamp of razwi.
  * @addr: address which accessing it caused razwi.
- * @engine_id_1: engine id of the razwi initiator, if it was initiated by engine that does not
- *               have engine id it will be set to U16_MAX.
- * @engine_id_2: second engine id of razwi initiator. Might happen that razwi have 2 possible
- *               engines which one them caused the razwi. In that case, it will contain the
- *               second possible engine id, otherwise it will be set to U16_MAX.
- * @no_engine_id: if razwi initiator does not have engine id, this field will be set to 1,
- *                otherwise 0.
- * @error_type: cause of razwi, page fault or access error, otherwise it will be set to U8_MAX.
- * @pad: padding to 64 bit.
+ * @engine_id: engine id of the razwi initiator, if it was initiated by engine that does not
+ *             have engine id it will be set to HL_RAZWI_NA_ENG_ID. If there are several possible
+ *             engines which caused the razwi, it will hold all of them.
+ * @num_of_possible_engines: contains number of possible engine ids. In some asics, razwi indication
+ *                           might be common for several engines and there is no way to get the
+ *                           exact engine. In this way, engine_id array will be filled with all
+ *                           possible engines caused this razwi. Also, there might be possibility
+ *                           in gaudi, where we don't indication on specific engine, in that case
+ *                           the value of this parameter will be zero.
+ * @flags: bitmask for additional data: HL_RAZWI_READ - razwi caused by read operation
+ *                                      HL_RAZWI_WRITE - razwi caused by write operation
+ *                                      HL_RAZWI_LBW - razwi caused by lbw fabric transaction
+ *                                      HL_RAZWI_HBW - razwi caused by hbw fabric transaction
+ *                                      HL_RAZWI_RR - razwi caused by range register
+ *                                      HL_RAZWI_ADDR_DEC - razwi caused by address decode error
+ *         Note: this data is not supported by all asics, in that case the relevant bits will not
+ *               be set.
  */
 struct hl_info_razwi_event {
 	__s64 timestamp;
 	__u64 addr;
-	__u16 engine_id_1;
-	__u16 engine_id_2;
-	__u8 no_engine_id;
-	__u8 error_type;
-	__u8 pad[2];
+	__u16 engine_id[HL_RAZWI_MAX_NUM_OF_ENGINES_PER_RTR];
+	__u16 num_of_possible_engines;
+	__u8 flags;
+	__u8 pad[5];
 };
 
 #define MAX_QMAN_STREAMS_INFO		4
@@ -1124,6 +1191,39 @@ struct hl_info_undefined_opcode_event {
 	__u32 cb_addr_streams_len;
 	__u32 engine_id;
 	__u32 stream_id;
+};
+
+/**
+ * struct hl_info_hw_err_event - info about HW error
+ * @timestamp: timestamp of error occurrence
+ * @event_id: The async event ID (specific to each device type).
+ * @pad: size padding for u64 granularity.
+ */
+struct hl_info_hw_err_event {
+	__s64 timestamp;
+	__u16 event_id;
+	__u16 pad[3];
+};
+
+/* FW error definition for event_type in struct hl_info_fw_err_event */
+enum hl_info_fw_err_type {
+	HL_INFO_FW_HEARTBEAT_ERR,
+	HL_INFO_FW_REPORTED_ERR,
+};
+
+/**
+ * struct hl_info_fw_err_event - info about FW error
+ * @timestamp: time-stamp of error occurrence
+ * @err_type: The type of event as defined in hl_info_fw_err_type.
+ * @event_id: The async event ID (specific to each device type, applicable only when event type is
+ *             HL_INFO_FW_REPORTED_ERR).
+ * @pad: size padding for u64 granularity.
+ */
+struct hl_info_fw_err_event {
+	__s64 timestamp;
+	__u16 err_type;
+	__u16 event_id;
+	__u32 pad;
 };
 
 /**
@@ -1174,6 +1274,29 @@ struct hl_info_sec_attest {
 	__u8 pad0[2];
 };
 
+/**
+ * struct hl_page_fault_info - page fault information.
+ * @timestamp: timestamp of page fault.
+ * @addr: address which accessing it caused page fault.
+ * @engine_id: engine id which caused the page fault, supported only in gaudi3.
+ */
+struct hl_page_fault_info {
+	__s64 timestamp;
+	__u64 addr;
+	__u16 engine_id;
+	__u8 pad[6];
+};
+
+/**
+ * struct hl_user_mapping - user mapping information.
+ * @dev_va: device virtual address.
+ * @size: virtual address mapping size.
+ */
+struct hl_user_mapping {
+	__u64 dev_va;
+	__u64 size;
+};
+
 enum gaudi_dcores {
 	HL_GAUDI_WS_DCORE,
 	HL_GAUDI_WN_DCORE,
@@ -1200,6 +1323,9 @@ enum gaudi_dcores {
  *                           needed, hence updating this variable so user will know the exact amount
  *                           of bytes copied by the kernel to the buffer.
  * @sec_attest_nonce: Nonce number used for attestation report.
+ * @array_size: Number of array members copied to user buffer.
+ *              Relevant for HL_INFO_USER_MAPPINGS info ioctl.
+ * @fw_sub_opcode: generic requests sub opcodes.
  * @pad: Padding to 64 bit.
  */
 struct hl_info_args {
@@ -1215,6 +1341,8 @@ struct hl_info_args {
 		__u32 eventfd;
 		__u32 user_buffer_actual_size;
 		__u32 sec_attest_nonce;
+		__u32 array_size;
+		__u32 fw_sub_opcode;
 	};
 
 	__u32 pad;
@@ -1415,17 +1543,39 @@ struct hl_cs_chunk {
  */
 #define HL_CS_FLAGS_ENGINE_CORE_COMMAND		0x4000
 
+/*
+ * The flush HBW PCI writes is merged into the existing CS ioctls.
+ * Used to flush all HBW PCI writes.
+ * This is a blocking operation and for this reason the user shall not use
+ * the return sequence number (which will be invalid anyway)
+ */
+#define HL_CS_FLAGS_FLUSH_PCI_HBW_WRITES	0x8000
+
+/*
+ * The engines CS is merged into the existing CS ioctls.
+ * Use it to control engines modes.
+ */
+#define HL_CS_FLAGS_ENGINES_COMMAND		0x10000
+
 #define HL_CS_STATUS_SUCCESS		0
 
 #define HL_MAX_JOBS_PER_CS		512
 
-/* HL_ENGINE_CORE_ values
+/*
+ * enum hl_engine_command - engine command
  *
- * HL_ENGINE_CORE_HALT: engine core halt
- * HL_ENGINE_CORE_RUN:  engine core run
+ * @HL_ENGINE_CORE_HALT: engine core halt
+ * @HL_ENGINE_CORE_RUN: engine core run
+ * @HL_ENGINE_STALL: user engine/s stall
+ * @HL_ENGINE_RESUME: user engine/s resume
  */
-#define HL_ENGINE_CORE_HALT	(1 << 0)
-#define HL_ENGINE_CORE_RUN	(1 << 1)
+enum hl_engine_command {
+	HL_ENGINE_CORE_HALT = 1,
+	HL_ENGINE_CORE_RUN = 2,
+	HL_ENGINE_STALL = 3,
+	HL_ENGINE_RESUME = 4,
+	HL_ENGINE_COMMAND_MAX
+};
 
 struct hl_cs_in {
 
@@ -1448,6 +1598,18 @@ struct hl_cs_in {
 
 			/* the core command to be sent towards engine cores */
 			__u32 core_command;
+		};
+
+		/* Valid only when HL_CS_FLAGS_ENGINES_COMMAND is set */
+		struct {
+			/* this holds address of array of uint32 for engines */
+			__u64 engines;
+
+			/* number of engines in engines array */
+			__u32 num_engines;
+
+			/* the engine command to be sent towards engines */
+			__u32 engine_command;
 		};
 	};
 
@@ -1792,15 +1954,24 @@ struct hl_mem_in {
 		/**
 		 * structure for exporting DMABUF object (used with
 		 * the HL_MEM_OP_EXPORT_DMABUF_FD op)
-		 * @handle: handle returned from HL_MEM_OP_ALLOC.
-		 *          in Gaudi, where we don't have MMU for the device memory, the
-		 *          driver expects a physical address (instead of a handle) in the
-		 *          device memory space.
-		 * @mem_size: size of memory allocation. Relevant only for GAUDI
+		 * @addr: for Gaudi1, the driver expects a physical address
+		 *        inside the device's DRAM. this is because in Gaudi1
+		 *        we don't have MMU that covers the device's DRAM.
+		 *        for all other ASICs, the driver expects a device
+		 *        virtual address that represents the start address of
+		 *        a mapped DRAM memory area inside the device.
+		 *        the address must be the same as was received from the
+		 *        driver during a previous HL_MEM_OP_MAP operation.
+		 * @mem_size: size of memory to export.
+		 * @offset: for Gaudi1, this value must be 0. For all other ASICs,
+		 *          the driver expects an offset inside of the memory area
+		 *          describe by addr. the offset represents the start
+		 *          address of that the exported dma-buf object describes.
 		 */
 		struct {
-			__u64 handle;
+			__u64 addr;
 			__u64 mem_size;
+			__u64 offset;
 		} export_dmabuf_fd;
 	};
 

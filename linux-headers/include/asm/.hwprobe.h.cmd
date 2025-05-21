@@ -1,0 +1,1 @@
+savedcmd_usr/include/asm/hwprobe.h := sh /home/users/scwang/bs3-ast540/source-packages/linux-6.6-riscv-ast-v5_4_0-branch/scripts/headers_install.sh /home/users/scwang/bs3-ast540/source-packages/linux-6.6-riscv-ast-v5_4_0-branch/arch/riscv/include/uapi/asm/hwprobe.h usr/include/asm/hwprobe.h

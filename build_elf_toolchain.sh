@@ -1,12 +1,11 @@
 TARGET=riscv32-elf
 PREFIX=`pwd`/nds32le-elf-newlib-v5
-ARCH=rv32imcxandes
+ARCH=rv32imc_zicsr_zifencei_xandes
 ABI=ilp32
 CPU=andes-25-series
 BUILD=`pwd`/build-nds32le-elf-newlib-v5
 
 BINUTILS_SRC=`pwd`/binutils
-GDB_SRC=`pwd`/gdb
 GCC_SRC=`pwd`/gcc
 NEWLIB_SRC=`pwd`/newlib
 MAKE_PARALLEL=-j`nproc`
@@ -95,11 +94,11 @@ cd ..
 # 5. GDB
 mkdir -p gdb
 cd gdb
-${GDB_SRC}/configure \
+${BINUTILS_SRC}/configure \
   --target=${TARGET} --prefix=${PREFIX} --with-arch=${ARCH} \
   --with-curses --disable-nls --enable-tui --with-python=no \
   --with-lzma=no --with-expat=yes --with-guile=no \
-  --disable-werror --enable-sim \
+  --disable-werror --disable-sim \
   --disable-binutils --disable-ld --disable-gas --disable-gprof
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 
