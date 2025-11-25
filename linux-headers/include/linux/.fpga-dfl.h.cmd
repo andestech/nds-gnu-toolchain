@@ -1,1 +1,0 @@
-savedcmd_usr/include/linux/fpga-dfl.h := sh /home/users/scwang/bs3-ast540/source-packages/linux-6.6-riscv-ast-v5_4_0-branch/scripts/headers_install.sh /home/users/scwang/bs3-ast540/source-packages/linux-6.6-riscv-ast-v5_4_0-branch/include/uapi/linux/fpga-dfl.h usr/include/linux/fpga-dfl.h

@@ -1,1 +1,0 @@
-savedcmd_usr/include/xen/gntalloc.h := sh /home/users/scwang/bs3-ast540/source-packages/linux-6.6-riscv-ast-v5_4_0-branch/scripts/headers_install.sh /home/users/scwang/bs3-ast540/source-packages/linux-6.6-riscv-ast-v5_4_0-branch/include/uapi/xen/gntalloc.h usr/include/xen/gntalloc.h

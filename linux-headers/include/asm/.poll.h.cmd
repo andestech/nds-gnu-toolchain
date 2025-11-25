@@ -1,1 +1,0 @@
-savedcmd_usr/include/asm/poll.h := sh /home/users/scwang/bs3-ast540/source-packages/linux-6.6-riscv-ast-v5_4_0-branch/scripts/headers_install.sh arch/riscv/include/generated/uapi/asm/poll.h usr/include/asm/poll.h

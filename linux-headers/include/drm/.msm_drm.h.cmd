@@ -1,1 +1,0 @@
-savedcmd_usr/include/drm/msm_drm.h := sh /home/users/scwang/bs3-ast540/source-packages/linux-6.6-riscv-ast-v5_4_0-branch/scripts/headers_install.sh /home/users/scwang/bs3-ast540/source-packages/linux-6.6-riscv-ast-v5_4_0-branch/include/uapi/drm/msm_drm.h usr/include/drm/msm_drm.h

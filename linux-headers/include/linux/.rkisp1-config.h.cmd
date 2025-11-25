@@ -1,1 +1,0 @@
-savedcmd_usr/include/linux/rkisp1-config.h := sh /home/users/scwang/bs3-ast540/source-packages/linux-6.6-riscv-ast-v5_4_0-branch/scripts/headers_install.sh /home/users/scwang/bs3-ast540/source-packages/linux-6.6-riscv-ast-v5_4_0-branch/include/uapi/linux/rkisp1-config.h usr/include/linux/rkisp1-config.h
