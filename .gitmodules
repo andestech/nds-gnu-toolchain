@@ -14,3 +14,7 @@
 	path = glibc
 	url = https://github.com/andestech/glibc.git
 	branch = ast-v5_4_0-release-v5
+[submodule "compiler-wrapper"]
+	path = compiler-wrapper
+	url = https://github.com/andestech/compiler-wrapper.git
+	branch = ast-v5_4_0-release-v5
