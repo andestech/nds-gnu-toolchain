@@ -3,11 +3,13 @@ PREFIX=`pwd`/nds32le-elf-newlib-v5
 ARCH=rv32imc_zicsr_zifencei_xandes
 ABI=ilp32
 CPU=andes-25-series
+MULTILIB=dsp,zc,andes45
 BUILD=`pwd`/build-nds32le-elf-newlib-v5
 
 BINUTILS_SRC=`pwd`/binutils
 GCC_SRC=`pwd`/gcc
 NEWLIB_SRC=`pwd`/newlib
+WRAPPER_SRC=`pwd`/compiler-wrapper
 MAKE_PARALLEL=-j`nproc`
 #MAKE_PARALLEL=-j1
 
@@ -29,7 +31,7 @@ ${BINUTILS_SRC}/configure \
   --with-curses --disable-nls --disable-tui --with-python=no --with-lzma=no \
   --with-expat=yes --with-guile=no --enable-plugins --disable-werror \
   --enable-deterministic-archives --disable-gdb --disable-sim \
-  --enable-multilib=yes --with-multilib-list=dsp
+  --enable-multilib=yes --with-multilib-list=${MULTILIB}
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 
 make ${MAKE_PARALLEL} all
@@ -48,7 +50,7 @@ ${GCC_SRC}/configure \
   --disable-nls --enable-languages=c --enable-lto \
   --enable-Os-default-ex9=yes --enable-gp-insn-relax-default=yes \
   --enable-error-on-no-atomic=yes --disable-tls \
-  --enable-multilib=yes --with-multilib-list=dsp \
+  --enable-multilib=yes --with-multilib-list=${MULTILIB} \
   --with-newlib --with-abi=${ABI} --disable-werror \
   --disable-shared --enable-threads=single \
   --enable-checking=release \
@@ -78,7 +80,7 @@ ${GCC_SRC}/configure \
   --disable-nls --enable-languages=c,c++ --enable-lto --with-abi=${ABI} \
   --enable-Os-default-ex9=yes --enable-gp-insn-relax-default=yes \
   --enable-error-on-no-atomic=yes --disable-tls \
-  --enable-multilib=yes --with-multilib-list=dsp \
+  --enable-multilib=yes --with-multilib-list=${MULTILIB} \
   --with-newlib --disable-shared --enable-threads=single \
   --disable-werror --with-headers=${PREFIX}/${TARGET}/include \
   --enable-checking=release \
@@ -100,6 +102,35 @@ ${BINUTILS_SRC}/configure \
   --with-lzma=no --with-expat=yes --with-guile=no \
   --disable-werror --disable-sim \
   --disable-binutils --disable-ld --disable-gas --disable-gprof
+rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
+make ${MAKE_PARALLEL} all
+rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
+make install
+rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
+cd ..
+
+# 6. build compiler wrapper
+mv -v ${PREFIX}/bin/${TARGET}-gcc \
+        ${PREFIX}/bin/${TARGET}-gcc.gnu
+mv -v ${PREFIX}/bin/${TARGET}-g++ \
+        ${PREFIX}/bin/${TARGET}-g++.gnu
+mv -v ${PREFIX}/bin/${TARGET}-c++ \
+        ${PREFIX}/bin/${TARGET}-c++.gnu
+
+mkdir -p compiler-wrapper
+cd compiler-wrapper
+${WRAPPER_SRC}/configure \
+    --prefix=${PREFIX}\
+    --target=${TARGET} \
+    --compiler-wrapper=gcc-wrapper \
+    --with-multilib-list=${MULTILIB} \
+    --with-arch=${ARCH} \
+    --with-abi=${ABI} \
+    --with-libc=newlib \
+    --with-sysroot=${PREFIX}/${TARGET}
 rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 
 make ${MAKE_PARALLEL} all

@@ -13,6 +13,7 @@ BINUTILS_SRC=`pwd`/binutils
 GCC_SRC=`pwd`/gcc
 GLIBC_SRC=`pwd`/glibc
 KERNEL_HDR_SRC=`pwd`/linux-headers
+WRAPPER_SRC=`pwd`/compiler-wrapper
 MAKE_PARALLEL=-j`nproc`
 #MAKE_PARALLEL=-j12
 
@@ -140,3 +141,31 @@ rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 cd ..
 
 cp -r ${PREFIX}/${TARGET}/lib/* ${SYSROOT}/lib${XLEN}/${ABI}/
+
+# 7. build compiler wrapper
+mv -v ${PREFIX}/bin/${TARGET}-gcc \
+        ${PREFIX}/bin/${TARGET}-gcc.gnu
+mv -v ${PREFIX}/bin/${TARGET}-g++ \
+        ${PREFIX}/bin/${TARGET}-g++.gnu
+mv -v ${PREFIX}/bin/${TARGET}-c++ \
+        ${PREFIX}/bin/${TARGET}-c++.gnu
+
+mkdir -p compiler-wrapper
+cd compiler-wrapper
+${WRAPPER_SRC}/configure \
+    --prefix=${PREFIX}\
+    --target=${TARGET} \
+    --compiler-wrapper=gcc-wrapper \
+    --with-arch=${ARCH} \
+    --with-abi=${ABI} \
+    --with-libc=glibc \
+    --with-sysroot=${PREFIX}/${TARGET}
+rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
+make ${MAKE_PARALLEL} all
+rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
+make install
+rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
+
+cd ..
