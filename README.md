@@ -4,6 +4,7 @@ GNU toolchain for AndesCore
 ###  Getting the sources
 
     $ git clone https://github.com/andestech/nds-gnu-toolchain.git -b <branch_name>
+    $ cd nds-gnu-toolchain
     $ git submodule update --init --recursive
 
 ### Prerequisites
@@ -13,6 +14,10 @@ Several standard packages are needed to build the toolchain.
 On Ubuntu, executing the following command should suffice:
 
     $ sudo apt-get install autoconf automake autotools-dev curl python3 libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev libexpat-dev
+
+For MINGW toolchain, additional library should be installed
+
+    $ sudo apt-get install libncurses-dev mingw-w64 gcc-mingw-w64 g++-mingw-w64
 
 On Fedora/CentOS/RHEL OS, executing the following command should suffice:
 
@@ -45,3 +50,8 @@ nds32le-linux-glibc-v5  | rv32ima_zicsr_zifencei_zca_xandes    | ilp32  | andes-
 nds32le-linux-glibc-v5d | rv32imafd_zicsr_zifencei_zca_xandes  | ilp32d | andes-25-series  | riscv32-linux
 nds64le-linux-glibc-v5  | rv64ima_zicsr_zifencei_zca_xandes    | lp64   | andes-25-series  | riscv64-linux
 nds64le-linux-glibc-v5d | rv64imafd_zicsr_zifencei_zca_xandes  | lp64d  | andes-25-series  | riscv64-linux
+
+### Installation (MINGW Newlib)
+First, you must define the variables in script "build_mingw_elf_toolchain.sh" like buiding newlib toolchain.
+Then, you can execute the script to build and install toolchain.
+The default setting is "nds32le-elf-newlib-v5".
